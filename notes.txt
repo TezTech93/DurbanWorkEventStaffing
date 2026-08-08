@@ -1,0 +1,11 @@
+login/register
+**client**
+    request crew
+    book event 25% deposit of total fee
+    view employee profiles
+**employee**
+    accept/deny job
+    message
+    upload resume
+    view profile
+    view jobs 25mile radius
