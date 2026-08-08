@@ -2,6 +2,9 @@ from sqlalchemy.orm import Session
 from models import User, Job, Booking, Message
 from schemas import JobCreate, BookingCreate, MessageCreate
 from fastapi import HTTPException, status
+import stripe
+from stripe_config import stripe  # or import stripe
+
 
 class ClientManager:
     @staticmethod
@@ -65,3 +68,24 @@ class ClientManager:
         db.commit()
         db.refresh(message)
         return message
+
+    @staticmethod
+    def create_payment_intent(db: Session, client_id: int, job_id: int):
+        job = db.query(Job).filter(Job.id == job_id, Job.client_id == client_id).first()
+        if not job:
+            raise HTTPException(status_code=404, detail="Job not found")
+        if job.status != "open":
+            raise HTTPException(status_code=400, detail="Job is not open for booking")
+        # Calculate deposit amount (in cents for Stripe)
+        deposit_amount = int(job.fee * (job.deposit_percent / 100.0) * 100)  # in cents
+        # Create PaymentIntent
+        intent = stripe.PaymentIntent.create(
+            amount=deposit_amount,
+            currency="usd",
+            metadata={"job_id": job.id, "client_id": client_id},
+            # You can add a description
+        )
+        # Save intent ID to job (optional but useful)
+        job.stripe_payment_intent_id = intent.id
+        db.commit()
+        return intent.client_secret, intent.id, deposit_amount / 100.0

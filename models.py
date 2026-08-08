@@ -4,6 +4,10 @@ from datetime import datetime
 import enum
 from database import Base
 
+class Profession(str, enum.Enum):
+    photographer = "photographer"
+    videographer = "videographer"
+
 class UserRole(str, enum.Enum):
     client = "client"
     employee = "employee"
@@ -36,6 +40,7 @@ class User(Base):
     messages_sent = relationship("Message", foreign_keys="Message.sender_id", back_populates="sender")
     messages_received = relationship("Message", foreign_keys="Message.receiver_id", back_populates="receiver")
     resume = relationship("Resume", back_populates="employee", uselist=False)
+    profession = Column(Enum(Profession), nullable=True)   # for employees
 
 class Job(Base):
     __tablename__ = "jobs"
@@ -54,6 +59,7 @@ class Job(Base):
     client = relationship("User", foreign_keys=[client_id], back_populates="jobs_created")
     employee = relationship("User", foreign_keys=[employee_id], back_populates="jobs_assigned")
     bookings = relationship("Booking", back_populates="job")
+    stripe_payment_intent_id = Column(String, nullable=True)   # track Stripe PaymentIntent
 
 class Booking(Base):
     __tablename__ = "bookings"

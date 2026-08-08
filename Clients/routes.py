@@ -4,6 +4,7 @@ from auth import get_current_user, get_db
 from models import User
 from schemas import JobCreate, JobOut, BookingCreate, BookingOut, MessageCreate, MessageOut, UserOut
 from Clients.manager import ClientManager
+from schemas import PaymentIntentCreate, PaymentIntentResponse
 
 router = APIRouter()
 

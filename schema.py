@@ -104,3 +104,12 @@ class ResumeOut(BaseModel):
     employee_id: int
     filename: str
     uploaded_at: datetime
+
+class PaymentIntentCreate(BaseModel):
+    job_id: int
+
+class PaymentIntentResponse(BaseModel):
+    client_secret: str
+    payment_intent_id: str
+    amount: float
+    currency: str = "usd"

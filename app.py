@@ -4,6 +4,7 @@ from database import engine, Base
 from Clients.routes import router as client_router
 from Employee.routes import router as employee_router
 from auth import router as auth_router
+from webhooks import router as webhook_router
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -21,6 +22,7 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(client_router, prefix="/client", tags=["client"])
 app.include_router(employee_router, prefix="/employee", tags=["employee"])
+app.include_router(webhook_router, prefix="/webhooks", tags=["webhooks"])
 
 @app.get("/")
 def root():

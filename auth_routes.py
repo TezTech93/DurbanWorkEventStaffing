@@ -19,6 +19,7 @@ def register(user: UserRegister, db: Session = Depends(get_db)):
         hashed_password=hashed,
         full_name=user.full_name,
         role=user.role,
+        profession=user.profession,
         latitude=user.latitude,
         longitude=user.longitude
     )
