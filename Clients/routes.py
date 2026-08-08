@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from auth import get_current_user, get_db
 from models import User
-from schemas import JobCreate, JobOut, BookingCreate, BookingOut, MessageCreate, MessageOut, UserOut
+from schema import JobCreate, JobOut, BookingCreate, BookingOut, MessageCreate, MessageOut, UserOut
 from Clients.manager import ClientManager
-from schemas import PaymentIntentCreate, PaymentIntentResponse
+from schema import PaymentIntentCreate, PaymentIntentResponse
 
 router = APIRouter()
 

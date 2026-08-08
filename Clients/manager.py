@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models import User, Job, Booking, Message
-from schemas import JobCreate, BookingCreate, MessageCreate
+from schema import JobCreate, BookingCreate, MessageCreate
 from fastapi import HTTPException, status
 import stripe
 from stripe_config import stripe  # or import stripe

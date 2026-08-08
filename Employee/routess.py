@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from auth import get_current_user, get_db
 from models import User
-from schemas import JobOut, BookingOut, MessageCreate, MessageOut, UserOut, UserProfileUpdate
+from schema import JobOut, BookingOut, MessageCreate, MessageOut, UserOut, UserProfileUpdate
 from Employee.manager import EmployeeManager
 
 router = APIRouter()

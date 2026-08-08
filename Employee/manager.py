@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models import User, Job, Booking, Message, Resume
-from schemas import MessageCreate
+from schema import MessageCreate
 from utils import haversine
 from fastapi import HTTPException, status, UploadFile
 import os

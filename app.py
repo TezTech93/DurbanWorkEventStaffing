@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 from Clients.routes import router as client_router
-from Employee.routes import router as employee_router
+from Employee.routess import router as employee_router
 from auth import router as auth_router
 from webhooks import router as webhook_router
 
