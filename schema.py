@@ -9,6 +9,7 @@ class UserRegister(BaseModel):
     password: str
     full_name: str
     role: UserRole
+    profession: Optional[str] = None  # for employees
     # optional employee fields
     latitude: Optional[float] = None
     longitude: Optional[float] = None
