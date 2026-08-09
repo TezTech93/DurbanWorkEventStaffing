@@ -35,6 +35,51 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 def add_missing_enum_values():
+    """Add all possible values to the 'profession' enum, including both
+    display names (e.g., 'Day Labor') and the frontend keys (e.g., 'day_labor').
+    """
+    # All possible values your frontend might send
+    values_to_add = [
+        # Display names (title case)
+        'Day Labor', 'Construction Labor', 'General Labor',
+        'Loading', 'Unloading', 'Warehouse Labor', 'Moving Help',
+        'Hospitality', 'Event Staff', 'Cleanup Crew',
+        'photographer', 'videographer',
+        # Frontend key names (lowercase underscore)
+        'day_labor', 'construction_labor', 'general_labor',
+        'loading', 'unloading', 'warehouse_labor', 'moving_help',
+        'hospitality', 'event_staff', 'cleanup_crew',
+        'photographer', 'videographer'  # already present but safe
+    ]
+
+    try:
+        with engine.connect() as conn:
+            # Check if enum exists
+            result = conn.execute(text("SELECT 1 FROM pg_type WHERE typname = 'profession'"))
+            if result.scalar() is None:
+                logging.info("Enum 'profession' does not exist yet – skipping.")
+                return
+
+            # Get existing labels
+            existing = conn.execute(
+                text("SELECT enumlabel FROM pg_enum WHERE enumtypid = 'profession'::regtype")
+            ).fetchall()
+            existing_labels = {row[0] for row in existing}
+
+            # Add missing values
+            added = 0
+            for val in values_to_add:
+                if val not in existing_labels:
+                    logging.info(f"Adding enum value: {val}")
+                    conn.execute(text(f"ALTER TYPE profession ADD VALUE '{val}'"))
+                    added += 1
+            conn.commit()
+            if added:
+                logging.info(f"Added {added} new enum values.")
+            else:
+                logging.info("All enum values already present.")
+    except Exception as e:
+        logging.error(f"Error while adding enum values: {e}")
     """Add all possible values to the 'profession' enum if they don't already exist."""
     values_to_add = [
         'Day Labor', 'Construction Labor', 'General Labor',
