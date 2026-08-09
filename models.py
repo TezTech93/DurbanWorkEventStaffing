@@ -5,6 +5,16 @@ import enum
 from database import Base
 
 class Profession(str, enum.Enum):
+    day_labor = "Day Labor"
+    construction_labor = "Construction Labor"
+    general_labor = "General Labor"
+    loading = "Loading"
+    unloading = "Unloading"
+    warehouse_labor = "Warehouse Labor"
+    moving_help = "Moving Help"
+    hospitality = "Hospitality"
+    event_staff = "Event Staff"
+    cleanup_crew = "Cleanup Crew"
     photographer = "photographer"
     videographer = "videographer"
 

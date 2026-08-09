@@ -27,3 +27,47 @@ app.include_router(webhook_router, prefix="/webhooks", tags=["webhooks"])
 @app.get("/")
 def root():
     return {"message": "Crew Booking API"}
+
+from database import engine, Base
+from sqlalchemy import text
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+def add_missing_enum_values():
+    """Add all possible values to the 'profession' enum if they don't already exist."""
+    values_to_add = [
+        'Day Labor', 'Construction Labor', 'General Labor',
+        'Loading', 'Unloading', 'Warehouse Labor', 'Moving Help',
+        'Hospitality', 'Event Staff', 'Cleanup Crew',
+        'photographer', 'videographer'
+    ]
+
+    try:
+        with engine.connect() as conn:
+            # Check if enum type exists
+            result = conn.execute(text("SELECT 1 FROM pg_type WHERE typname = 'profession'"))
+            if result.scalar() is None:
+                logging.info("Enum 'profession' does not exist yet – skipping.")
+                return
+
+            # Get existing labels
+            existing = conn.execute(
+                text("SELECT enumlabel FROM pg_enum WHERE enumtypid = 'profession'::regtype")
+            ).fetchall()
+            existing_labels = {row[0] for row in existing}
+
+            # Add missing values
+            for val in values_to_add:
+                if val not in existing_labels:
+                    logging.info(f"Adding enum value: {val}")
+                    conn.execute(text(f"ALTER TYPE profession ADD VALUE '{val}'"))
+                    # Commit after each add (auto-commit is enabled? We'll commit at the end)
+            conn.commit()
+            logging.info("Enum values added successfully.")
+    except Exception as e:
+        logging.error(f"Error while adding enum values: {e}")
+
+# --- Then later in app.py ---
+Base.metadata.create_all(bind=engine)   # create tables if they don't exist
+add_missing_enum_values()              # add missing enum values (runs after tables are created)
